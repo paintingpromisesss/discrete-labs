@@ -29,9 +29,6 @@ void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data)
 
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
     std::vector<std::pair<unsigned short, unsigned long long>> data;
     std::ifstream inFile("input.txt");
     unsigned short first;
