@@ -1,4 +1,4 @@
-.PHONY: build run clean
+.PHONY: build run clean-build generate time
 
 build: clean-build
 	mkdir build
