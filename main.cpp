@@ -23,30 +23,29 @@ void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data)
         sortedData[counts[data[i].first] - 1] = data[i];
         counts[data[i].first]--;
     }
-    std::ofstream outFile("output.txt");
-    for (size_t i = 0; i < sortedData.size(); i++) {
-        outFile << sortedData[i].first << "\t" << sortedData[i].second << std::endl;
-    }
-    outFile.close();
+
+    data = std::move(sortedData);
 }
 
 
 int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     std::vector<std::pair<unsigned short, unsigned long long>> data;
     std::ifstream inFile("input.txt");
-    std::string line;
-
-    while (std::getline(inFile, line)) {
-        if (line.empty()) continue;
-        std::istringstream iss(line);
-        unsigned short first;
-        unsigned long long second;
-        if (iss >> first >> second) {
-            data.push_back(std::make_pair(first, second));
-        }
+    unsigned short first;
+    unsigned long long second;
+    while (inFile >> first >> second) {
+        data.push_back(std::make_pair(first, second));
     }
-    inFile.close();
+
 
     countSort(data);
+    std::ofstream outFile("output.txt");
+    for (size_t i = 0; i < data.size(); i++) {
+        outFile << data[i].first << "\t" << data[i].second << std::endl;
+    }
+    outFile.close();
     return 0;
 }
