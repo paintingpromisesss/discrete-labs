@@ -31,19 +31,19 @@ void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data)
     data = std::move(sortedData);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     std::vector<std::pair<unsigned short, unsigned long long>> data;
-    FILE *inFile = fopen("input.txt", "r");
+    FILE *inFile = fopen(argv[1], "r");
     unsigned short first;
     unsigned long long second;
-    while (fscanf(inFile, "%hu %llu", &first, &second) == 2) {
+    while (fscanf(inFile, "%hu\t%llu", &first, &second) == 2) {
         data.push_back(std::make_pair(first, second));
     }
     fclose(inFile);
 
     countSort(data);
 
-    FILE *outFile = fopen("output.txt", "w");
+    FILE *outFile = fopen(argv[2], "w");
     for (size_t i = 0; i < data.size(); i++) {
         fprintf(outFile, "%hu\t%llu\n", data[i].first, data[i].second);
     }

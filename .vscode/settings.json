@@ -54,5 +54,6 @@
         "variant": "cpp",
         "fstream": "cpp",
         "sstream": "cpp"
-    }
+    },
+    "FSharp.suggestGitignore": false
 }
