@@ -13,8 +13,8 @@ clean-build:
 generate:
 	rm -rf ./data/
 	mkdir data
-	g++ -o data/generator generator.cpp
-	./data/generator
+	g++ -o build/generator generator.cpp
+	./build/generator
 
 time:
-	time -f "./build/main %U user %S system %P cpu %e total" ./build/main
+	time -f "./build/main %U user %S system %P cpu %e total" ./build/main $(ARGS)
