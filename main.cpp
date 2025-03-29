@@ -9,23 +9,25 @@ const int MAX = 65536;
 void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data) {
     if (data.empty()) return;
 
-    unsigned short maxKey = std::max_element(data.begin(), data.end(), 
-        [](const auto &a, const auto &b) { return a.first < b.first; })->first;
+    unsigned short minKey = std::min_element(data.begin(), data.end(),
+        [](const auto &a, const auto &b){ return a.first < b.first; })->first;
+    unsigned short maxKey = std::max_element(data.begin(), data.end(),
+        [](const auto &a, const auto &b){ return a.first < b.first; })->first;
 
-    std::vector<unsigned int> counts(maxKey + 1, 0);
+    std::vector<unsigned int> counts(maxKey - minKey + 1, 0);
 
-    for (size_t i = 0; i < data.size(); i++) {
-        counts[data[i].first]++;
+    for (const auto &elem : data) {
+        counts[elem.first - minKey]++;
     }
 
-    for (size_t i = 1; i <= maxKey; i++) {
+    for (size_t i = 1; i < counts.size(); i++) {
         counts[i] += counts[i - 1];
     }
 
     std::vector<std::pair<unsigned short, unsigned long long>> sortedData(data.size());
     for (int i = data.size() - 1; i >= 0; i--) {
-        sortedData[counts[data[i].first] - 1] = data[i];
-        counts[data[i].first]--;
+        sortedData[counts[data[i].first - minKey] - 1] = data[i];
+        counts[data[i].first - minKey]--;
     }
 
     data = std::move(sortedData);
