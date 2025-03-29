@@ -1,4 +1,4 @@
-.PHONY: build run clean-build generate time
+.PHONY: build run clean-build generate test
 
 build: clean-build
 	mkdir build
@@ -16,5 +16,10 @@ generate:
 	g++ -o build/generator generator.cpp
 	./build/generator
 
-time:
-	time -f "./build/main %U user %S system %P cpu %e total" ./build/main $(ARGS)
+make test:
+	@g++ -o build/main main.cpp
+	@g++ -o build/stable_sort stable_sort.cpp
+	@echo "Testing std::stable_sort..."
+	@./build/stable_sort $(ARGS)
+	@echo "Testing countSort..."
+	@./build/main $(ARGS)

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <utility>
 #include <cstdio>
-
+#include <ctime>
 const int MAX = 65536;
 
 void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data) {
@@ -42,13 +42,22 @@ int main(int argc, char *argv[]) {
         data.push_back(std::make_pair(first, second));
     }
     fclose(inFile);
-
+    
+    clock_t start = clock();
+    
     countSort(data);
+
+    clock_t end = clock();
+    double elapsed = double(end - start) / CLOCKS_PER_SEC;
+
+    std::cout << "Elapsed time: " << elapsed << " seconds" << std::endl;
 
     FILE *outFile = fopen(argv[2], "w");
     for (size_t i = 0; i < data.size(); i++) {
         fprintf(outFile, "%hu\t%llu\n", data[i].first, data[i].second);
     }
     fclose(outFile);
+
+    
     return 0;
 }

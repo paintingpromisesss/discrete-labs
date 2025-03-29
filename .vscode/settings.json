@@ -53,7 +53,10 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "fstream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp"
     },
     "FSharp.suggestGitignore": false
 }
