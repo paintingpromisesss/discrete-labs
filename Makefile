@@ -14,7 +14,7 @@ generate:
 	rm -rf ./data/
 	mkdir data
 	g++ -o build/generator generator.cpp
-	./build/generator
+	./build/generator $(N)
 
 make test:
 	@g++ -o build/main main.cpp
