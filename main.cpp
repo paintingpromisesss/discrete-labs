@@ -17,9 +17,7 @@ class Treap
 
     Node *root;
 
-public:
-    Node *getRoot() const { return root; }
-
+private:
     Node *find(Node *node, std::string key)
     {
         if (!node)
@@ -108,6 +106,19 @@ public:
         return node;
     }
 
+    void removeTree(Node *node)
+    {
+        if (!node)
+        {
+            return;
+        }
+
+        removeTree(node->left);
+        removeTree(node->right);
+
+        delete node;
+    }
+
     std::pair<Node *, Node *> split(Node *node, std::string key)
     {
         if (!node)
@@ -153,7 +164,17 @@ public:
     }
 
 public:
+    Node *getRoot() const
+    {
+        return root;
+    }
+
     Treap() : root(nullptr) {}
+
+    ~Treap()
+    {
+        removeTree(root);
+    }
 
     bool insert(std::string key, uint64_t value)
     {
@@ -201,6 +222,8 @@ public:
         root = merge(left, right);
         return true;
     }
+
+    
 
     void print(Node *node)
     {
