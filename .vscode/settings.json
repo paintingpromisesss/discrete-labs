@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.dbclient-js": "javascript",
         ".fantomasignore": "ignore",
         "vector": "cpp",
         "array": "cpp",
@@ -56,7 +57,9 @@
         "sstream": "cpp",
         "chrono": "cpp",
         "ratio": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "cstring": "cpp",
+        "map": "cpp"
     },
     "FSharp.suggestGitignore": false
 }
