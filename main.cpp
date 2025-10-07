@@ -1,63 +1,101 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <algorithm>
-#include <utility>
-#include <cstdio>
-#include <ctime>
-const int MAX = 65536;
 
-void countSort(std::vector<std::pair<unsigned short, unsigned long long>> &data) {
-    if (data.empty()) return;
+std::vector<int> build_suffix_array(const std::string &text)
+{
+    int n = text.size();
+    std::vector<int> suffix_array(n);
 
-    unsigned short minKey = std::min_element(data.begin(), data.end(),
-        [](const auto &a, const auto &b){ return a.first < b.first; })->first;
-    unsigned short maxKey = std::max_element(data.begin(), data.end(),
-        [](const auto &a, const auto &b){ return a.first < b.first; })->first;
-
-    std::vector<unsigned int> counts(maxKey - minKey + 1, 0);
-
-    for (const auto &elem : data) {
-        counts[elem.first - minKey]++;
+    for (int i = 0; i < n; i++)
+    {
+        suffix_array[i] = i;
     }
+    std::sort(suffix_array.begin(), suffix_array.end(), [&text](int a, int b)
+              { return std::lexicographical_compare(text.begin() + a, text.end(), text.begin() + b, text.end()); });
 
-    for (size_t i = 1; i < counts.size(); i++) {
-        counts[i] += counts[i - 1];
-    }
-
-    std::vector<std::pair<unsigned short, unsigned long long>> sortedData(data.size());
-    for (int i = data.size() - 1; i >= 0; i--) {
-        sortedData[counts[data[i].first - minKey] - 1] = data[i];
-        counts[data[i].first - minKey]--;
-    }
-
-    data = std::move(sortedData);
+    return suffix_array;
 }
 
-int main(int argc, char *argv[]) {
-    std::vector<std::pair<unsigned short, unsigned long long>> data;
-    FILE *inFile = fopen(argv[1], "r");
-    unsigned short first;
-    unsigned long long second;
-    while (fscanf(inFile, "%hu\t%llu", &first, &second) == 2) {
-        data.push_back(std::make_pair(first, second));
+std::vector<int> find_indices(const std::vector<int> &suffix_array, const std::string &text, const std::string &pattern)
+{
+    std::vector<int> indices;
+    if (pattern.empty())
+        return indices;
+
+    int left = 0, right = suffix_array.size();
+    while (left < right)
+    {
+        int mid = (left + right) / 2;
+        int cmp = text.compare(suffix_array[mid], pattern.size(), pattern);
+        if (cmp < 0)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid;
+        }
     }
-    fclose(inFile);
-    
-    clock_t start = clock();
-    
-    countSort(data);
 
-    clock_t end = clock();
-    double elapsed = double(end - start) / CLOCKS_PER_SEC;
+    int lower = left;
 
-    std::cout << "Elapsed time: " << elapsed << " seconds" << std::endl;
-
-    FILE *outFile = fopen(argv[2], "w");
-    for (size_t i = 0; i < data.size(); i++) {
-        fprintf(outFile, "%hu\t%llu\n", data[i].first, data[i].second);
+    right = suffix_array.size();
+    while (left < right)
+    {
+        int mid = (left + right) / 2;
+        int cmp = text.compare(suffix_array[mid], pattern.size(), pattern);
+        if (cmp <= 0)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid;
+        }
     }
-    fclose(outFile);
+    int upper = left;
 
-    
+    for (int i = lower; i < upper; i++)
+    {
+        indices.push_back(suffix_array[i] + 1);
+    }
+
+    std::sort(indices.begin(), indices.end());
+    return indices;
+}
+
+int main()
+{
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    std::string text;
+    std::getline(std::cin, text);
+    std::vector<int> suffix_array = build_suffix_array(text);
+
+    std::string pattern;
+    int counter = 1;
+
+    while (std::getline(std::cin, pattern))
+    {
+        if (pattern.empty())
+            continue;
+
+        std::vector<int> indices = find_indices(suffix_array, text, pattern);
+        if (!indices.empty())
+        {
+            std::cout << counter << ": ";
+            for (size_t i = 0; i < indices.size(); i++)
+            {
+                if (i > 0)
+                    std::cout << ", ";
+                std::cout << indices[i];
+            }
+            std::cout << "\n";
+        }
+        counter++;
+    }
     return 0;
 }
