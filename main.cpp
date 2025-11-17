@@ -1,59 +1,68 @@
-#include <iostream>
 #include <vector>
-#include <algorithm>
-#include <cstdint>
+#include <iostream>
 
-void dfs(int v, std::vector<std::vector<int>> &graph, std::vector<int> &color, std::vector<int> &result, bool &is_cycle)
+const long long INF = 1e18;
+struct Edge
 {
-    color[v] = 1;
-    for (int u : graph[v])
+    int from, to;
+    long long weight;
+};
+
+long long BellmanFord(int n, int m, int start, int finish, const std::vector<Edge> &edges)
+{
+
+    std::vector<long long> dist(n + 1, INF);
+    dist[start] = 0;
+
+    for (int i = 0; i < n - 1; i++)
     {
-        if (color[u] == 1)
+        bool changed = false;
+        std::vector<long long> prev_dist = dist;
+        for (const auto &edge : edges)
         {
-            is_cycle = true;
-            return;
+            if (prev_dist[edge.from] != INF && prev_dist[edge.from] + edge.weight < dist[edge.to])
+            {
+                dist[edge.to] = prev_dist[edge.from] + edge.weight;
+                changed = true;
+            }
         }
-        if (color[u] == 0)
-            dfs(u, graph, color, result, is_cycle);
+        if (dist[finish] != INF && !changed)
+        {
+            break;
+        }
     }
-    color[v] = 2;
-    result.push_back(v);
+
+    if (dist[finish] == INF)
+    {
+        return -1;
+    }
+    else
+    {
+        return dist[finish];
+    }
 }
 
 int main()
 {
-    bool is_cycle = false;
+    int n, m, start, finish;
+    std::cin >> n >> m >> start >> finish;
 
-    int n, m;
-    std::cin >> n >> m;
-
-    std::vector<std::vector<int>> graph(n + 1);
-
-    std::vector<int> color(n + 1, 0), result;
-
-    int arg = INT32_MAX;
-
+    std::vector<Edge> edges;
     for (int i = 0; i < m; i++)
     {
-        int a, b;
-        std::cin >> a >> b;
-        graph[a].push_back(b);
+        int u, v;
+        long long w;
+        std::cin >> u >> v >> w;
+        edges.push_back({u, v, w});
     }
 
-    for (int i = 1; i <= n; i++)
+    long long result = BellmanFord(n, m, start, finish, edges);
+    if (result == -1)
     {
-        if (color[i] == 0) dfs(i, graph, color, result, is_cycle);
-    }
-
-    if (is_cycle)
-    {
-        std::cout << -1 << std::endl;
+        std::cout << "No solution" << std::endl;
     }
     else
     {
-        for (int i = n - 1; i > 0; i--)
-        {
-            std::cout << result[i] << " " << result[i - 1] << std::endl;
-        }
+        std::cout << result << std::endl;
     }
 }
