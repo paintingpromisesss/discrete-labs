@@ -48,7 +48,7 @@ std::vector<std::string> compressLZW(const std::string &input)
     return output;
 }
 
-std::vector<std::string> decompressLZM(const std::vector<int> &input)
+std::vector<std::string> decompressLZW(const std::vector<int> &input)
 {
     std::vector<std::string> decompressList;
     std::vector<std::string> output;
@@ -60,7 +60,6 @@ std::vector<std::string> decompressLZM(const std::vector<int> &input)
     decompressList.push_back("EOF");
 
     std::string previous = "";
-    int nextCode = 27;
 
     for (auto &code : input)
     {
@@ -75,7 +74,6 @@ std::vector<std::string> decompressLZM(const std::vector<int> &input)
             if (!previous.empty())
             {
                 decompressList.push_back(previous + current[0]);
-                nextCode++;
             }
             previous = current;
         }
@@ -84,7 +82,6 @@ std::vector<std::string> decompressLZM(const std::vector<int> &input)
             std::string current = previous + previous[0];
             output.push_back(current);
             decompressList.push_back(current);
-            nextCode++;
             previous = current;
         }
     }
@@ -119,7 +116,7 @@ int main()
             if (inputCode == 26)
                 break;
         }
-        std::vector<std::string> decompressed = decompressLZM(codes);
+        std::vector<std::string> decompressed = decompressLZW(codes);
         for (const auto &str : decompressed)
         {
             std::cout << str;
